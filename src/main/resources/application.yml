@@ -6,9 +6,9 @@ spring:
     name: ecommerce-monolith
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/ecommerce_db
-    username: postgres
-    password: 2008
+    url: ${DATABASE_URL}                    # ← from Render env variable
+    username: ${DATABASE_USERNAME}          # ← from Render env variable
+    password: ${DATABASE_PASSWORD}          # ← from Render env variable
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -20,20 +20,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      properties:
-        allow.auto.create.topics: true
-    consumer:
-      group-id: ecommerce-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
 
 jwt:
   secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
